@@ -1,0 +1,75 @@
+from mpl_toolkits.mplot3d import Axes3D
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt 
+import numpy as np 
+import os 
+import pandas as pd 
+import shutil
+from tqdm.notebook import tqdm
+
+
+import numpy as np
+
+import torch
+import torch.nn as nn
+
+from torch.utils.data import Dataset, DataLoader
+
+
+
+from sklearn.model_selection import train_test_split
+
+from IPython.display import clear_output
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+%matplotlib inline
+!gdown --id 1qh7SM3yXSX--jBymQ9DJhWiddM9ouxGV 
+!unzip -q archive.zip
+nRowsRead = None 
+df1 = pd.read_csv('/content/data.csv', delimiter=',', nrows = nRowsRead)
+df1.dataframeName = 'data.csv'
+nRow, nCol = df1.shape
+def plotPerColumnDistribution(df, nGraphShown, nGraphPerRow):
+    nunique = df.nunique()
+    df = df[[col for col in df if nunique[col] > 1 and nunique[col] < 50]]
+    nRow, nCol = df.shape
+    columnNames = list(df)
+    nGraphRow = (nCol + nGraphPerRow - 1) / nGraphPerRow
+    plt.figure(num = None, figsize = (6 * nGraphPerRow, 8 * nGraphRow), dpi = 80, facecolor = 'w', edgecolor = 'k')
+    for i in range(min(nCol, nGraphShown)):
+        plt.subplot(nGraphRow, nGraphPerRow, i + 1)
+        columnDf = df.iloc[:, i]
+        if (not np.issubdtype(type(columnDf.iloc[0]), np.number)):
+            valueCounts = columnDf.value_counts()
+            valueCounts.plot.bar()
+        else:
+            columnDf.hist()
+        plt.ylabel('counts')
+        plt.xticks(rotation = 90)
+        plt.title(f'{columnNames[i]} (column {i})')
+    plt.tight_layout(pad = 1.0, w_pad = 1.0, h_pad = 1.0)
+    plt.show()
+    import random
+    !pip install telebot
+    !pip install pyTelegramBotApi
+    import telebot
+from telebot import types
+from telebot import TeleBot
+
+bot: TeleBot = telebot.TeleBot('1542888522:AAFUaOOS6_0QnF13SLp3Xf5lBGxfmVMV6EA', parse_mode=None)
+@bot.message_handler(commands={'start'})
+def start_message(message):
+    bot.reply_to(message, 'Привет! \n Я умею находить случайные статьи с сайта habr.com. Однако в будущем реализуется поиск статей на определённую тему. Воспользоватся функцией(пока единственной) можно с помощью команды /randomarticle'
+    )
+@bot.message_handler(commands={'randomarticle'})
+
+def message(message):
+    a=random.randint(0, 10556)
+    
+    e=str(df1.title[a])+'\n'+'  '
+    d=str(df1.description[a])+'\n'+'  '
+    c=str(df1.author_name[a])+str(df1.modified_date[a])+'\n'+'  '
+    b=str(df1.link[a])
+    bot.send_message(message.chat.id,e+d+c+b)
+bot.polling()
